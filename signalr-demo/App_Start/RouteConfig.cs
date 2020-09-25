@@ -16,7 +16,7 @@ namespace signalr_demo
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "SignalRDemo", id = UrlParameter.Optional }
             );
         }
     }

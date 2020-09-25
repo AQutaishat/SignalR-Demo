@@ -1,4 +1,5 @@
-﻿using System;
+﻿using signalr_demo.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,23 +9,23 @@ namespace signalr_demo.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult SignalRDemo()
         {
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult NotificationDemo()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
 
-            return View();
+        [HttpGet]
+        public ActionResult SendMessage(string MessageText)
+        {
+            MyHub.SendMessageToAll("Testing Messaging", MessageText, "");
+            return Json(new { SucessMessage = "Successfully" }, JsonRequestBehavior.AllowGet);
         }
+
     }
 }

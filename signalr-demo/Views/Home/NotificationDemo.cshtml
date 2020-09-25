@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Notification Demo";
+}
+
+<h2>Notification Demo</h2>
+<br /><br />
+<form class="form-horizontal">
+    <div class="form-group">
+        <label for="titleTxt" class="col-sm-2 control-label">Title</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="titleTxt" placeholder="title">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="msgTxt" class="col-sm-2 control-label">Message</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="msgTxt" placeholder="Message">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" class="btn btn-default" onclick="ShowNotification()">Show Notificatio</button>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        function ShowNotification() {
+            var Title = $("#titleTxt").val();
+            var Message = $("#msgTxt").val();
+            notifyMe(Title, Message,"");
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!Notification) {
+                alert('Desktop notifications not available in your browser. Try Chromium.');
+                return;
+            }
+
+            if (Notification.permission !== "granted")
+                Notification.requestPermission();
+        });
+
+        function notifyMe(title, msg, link) {
+            if (Notification.permission !== "granted") {
+                alert(title + " - " + msg);
+
+                Notification.requestPermission();
+                return false;
+            }
+            else {
+                var notification = new Notification(title, {
+                    icon: '<%=BaseURl%>design/en/images/TagLock.jpg',
+                    body: msg,
+                });
+                notification.onclick = function () {
+                    window.open("<%=BaseURl%>" + link);
+                };
+                return true;
+            }
+        }
+    </script>
+}

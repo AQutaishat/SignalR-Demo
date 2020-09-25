@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<h2>SingalR Demo</h2>
+<br /><br />
+
+<div class="panel panel-primary">
+    <div class="panel-heading"> Messages </div>
+
+    <ul class="list-group" id="Messages-List">
+    </ul>
+    <div class="panel-body">
+        <p id="No-Messages">
+            No Messages
+        </p>
+    </div>
+    <div class="panel-footer panel-primary">
+        <form class="form-inline row">
+            <div class="form-group col-md-12">
+                <input type="text" class="form-control" id="message-text" style="width:calc(100% - 130px);max-width:100%" placeholder="Enter Message Text">
+                <button type="button" class="btn btn-default" onclick="SendMessage()">Send Message</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            SetupSignalR();
+        });
+
+        function SetupSignalR() {
+            var logger = $.connection.myHub;
+            logger.client.sendMessage = ReceiveMessge;
+            //$.connection.hub.logging = true; //if you want to trace every thing happining in signalR, uncomment this line, it will write Verbos messages to console 
+            $.connection.hub.start();
+        }
+
+        function ReceiveMessge(title, msg, link, user) {
+                $('#No-Messages').hide();
+                var d = new Date();
+                var dtext = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+                 $("#Messages-List").append('<li class="list-group-item"><b>'+ dtext + '</b> '  + msg +'</li>');
+        };
+
+
+        //-------------------------------------
+        //**  below function is not part of signalR, it is used to send message to other clients by calling 
+        //** ajax function in the controller which will call SignalR hub funtion to send to other users and also to  Me
+        function SendMessage() {
+            var MessageText = $("#message-text").val();
+            if (MessageText == "" || MessageText == null) {
+                alert("Please enter a message");
+                return;
+            }
+            var URL = "@Url.Action("SendMessage", new { })";
+            $.getJSON(URL + "?MessageText=" + MessageText, function (data) {
+               // alert("Sent " + data.SucessMessage);
+            });
+            return false;
+        }
+
+    </script>
+}
